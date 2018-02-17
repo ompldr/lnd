@@ -21,4 +21,5 @@ EXPOSE 9735 8080
 
 WORKDIR /lnd
 COPY lnd.conf /lnd/lnd.conf
+COPY bashrc /root/.bashrc
 ENTRYPOINT ["/go/bin/lnd"]
