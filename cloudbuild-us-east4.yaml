@@ -17,13 +17,3 @@ steps:
   env:
   - 'CLOUDSDK_COMPUTE_ZONE=us-east4-a'
   - 'CLOUDSDK_CONTAINER_CLUSTER=ompldr-us-east4'
-- name: 'gcr.io/cloud-builders/kubectl'
-  args:
-  - patch
-  - statefulset
-  - lnd
-  - --type=json
-  - '-p=[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"us.gcr.io/ompldr/lnd:$REVISION_ID"}]'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-west1-a'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=ompldr-us-west1'
