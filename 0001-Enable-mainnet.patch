@@ -1,24 +1,25 @@
-From c351f7da5810ec58073aff1470e4a0de46e37637 Mon Sep 17 00:00:00 2001
+From be87047177d36b11921ea470844a66240ce4c6bb Mon Sep 17 00:00:00 2001
 From: Brenden Matthews <brenden@diddyinc.com>
-Date: Tue, 13 Feb 2018 15:15:09 -0500
+Date: Wed, 21 Feb 2018 07:50:09 -0500
 Subject: [PATCH] Enable mainnet.
 
 ---
- chainparams.go | 6 ++++++
+ chainparams.go | 7 +++++++
  config.go      | 5 +++++
- 2 files changed, 11 insertions(+)
+ 2 files changed, 12 insertions(+)
 
 diff --git a/chainparams.go b/chainparams.go
-index 0c7fd34..4a51c49 100644
+index 0c7fd34..c632e92 100644
 --- a/chainparams.go
 +++ b/chainparams.go
-@@ -26,6 +26,12 @@ type litecoinNetParams struct {
-	rpcPort string
+@@ -26,6 +26,13 @@ type litecoinNetParams struct {
+ 	rpcPort string
  }
-
-+// bitcoinMainNetParams contains parameters specific to the main bitcoin network
+ 
++// bitcoinMainNetParams contains parameters specific to the 3rd version of the
++// test network.
 +var bitcoinMainNetParams = bitcoinNetParams{
-+	Params:  &bitcoinCfg.MainNetParams,
++	Params:  &bitcoinCfg.TestNet3Params,
 +	rpcPort: "8334",
 +}
 +
@@ -26,27 +27,28 @@ index 0c7fd34..4a51c49 100644
  // test network.
  var bitcoinTestNetParams = bitcoinNetParams{
 diff --git a/config.go b/config.go
-index 27baa58..4c5ea7c 100644
+index c890c55..2385ce1 100644
 --- a/config.go
 +++ b/config.go
 @@ -91,6 +91,7 @@ type chainConfig struct {
-
-	Node string `long:"node" description:"The blockchain interface to use." choice:"btcd" choice:"bitcoind" choice:"neutrino"`
-
-+	MainNet  bool `long:"mainnet" description:"Use the main network"`
-	TestNet3 bool `long:"testnet" description:"Use the test network"`
-	SimNet   bool `long:"simnet" description:"Use the simulation test network"`
-	RegTest  bool `long:"regtest" description:"Use the regression test network"`
-@@ -400,6 +401,10 @@ func loadConfig() (*config, error) {
-		// number of network flags passed; assign active network params
-		// while we're at it.
-		numNets := 0
+ 
+ 	Node string `long:"node" description:"The blockchain interface to use." choice:"btcd" choice:"bitcoind" choice:"neutrino"`
+ 
++	MainNet bool `long:"mainnet" description:"Use the main network"`
+ 	TestNet3 bool `long:"testnet" description:"Use the test network"`
+ 	SimNet   bool `long:"simnet" description:"Use the simulation test network"`
+ 	RegTest  bool `long:"regtest" description:"Use the regression test network"`
+@@ -402,6 +403,10 @@ func loadConfig() (*config, error) {
+ 		// number of network flags passed; assign active network params
+ 		// while we're at it.
+ 		numNets := 0
 +		if cfg.Bitcoin.MainNet {
 +			numNets++
 +			activeNetParams = bitcoinMainNetParams
 +		}
-		if cfg.Bitcoin.TestNet3 {
-			numNets++
-			activeNetParams = bitcoinTestNetParams
---
+ 		if cfg.Bitcoin.TestNet3 {
+ 			numNets++
+ 			activeNetParams = bitcoinTestNetParams
+-- 
 2.16.1
+

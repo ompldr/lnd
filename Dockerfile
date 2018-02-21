@@ -13,6 +13,10 @@ RUN git clone https://github.com/lightningnetwork/lnd $GOPATH/src/github.com/lig
 # Make lnd folder default.
 WORKDIR $GOPATH/src/github.com/lightningnetwork/lnd
 
+# Patch to enable mainnet
+COPY 0001-Enable-mainnet.patch .
+RUN git apply 0001-Enable-mainnet.patch
+
 # Install dependency and install/build lnd.
 RUN glide install
 RUN go install . ./cmd/...
