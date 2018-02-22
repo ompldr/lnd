@@ -15,11 +15,9 @@ WORKDIR $GOPATH/src/github.com/lightningnetwork/lnd
 
 # Patch to enable mainnet
 COPY 0001-Enable-mainnet.patch .
-RUN git apply 0001-Enable-mainnet.patch
-
-# Install dependency and install/build lnd.
-RUN glide install
-RUN go install . ./cmd/...
+RUN git apply 0001-Enable-mainnet.patch \
+  && glide install \
+  && go install . ./cmd/...
 
 EXPOSE 9735 8080
 
