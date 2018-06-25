@@ -13,7 +13,7 @@ RUN git clone https://github.com/lightningnetwork/lnd $GOPATH/src/github.com/lig
 # Make lnd folder default.
 WORKDIR $GOPATH/src/github.com/lightningnetwork/lnd
 
-RUN git pull https://github.com/Roasbeef/lnd.git async-link-stop
+RUN git config --global user.name "abc" && git config --global user.email "abc@example.com" && git pull https://github.com/Roasbeef/lnd.git async-link-stop
 
 RUN dep ensure \
   && go install . ./cmd/...
