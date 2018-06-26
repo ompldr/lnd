@@ -8,12 +8,10 @@ ENV GODEBUG netdns=cgo
 RUN go get -u github.com/golang/dep/cmd/dep
 
 # Grab and install the latest version of lnd and all related dependencies.
-RUN git clone https://github.com/lightningnetwork/lnd $GOPATH/src/github.com/lightningnetwork/lnd
+RUN git clone --depth=1 https://github.com/lightningnetwork/lnd $GOPATH/src/github.com/lightningnetwork/lnd
 
 # Make lnd folder default.
 WORKDIR $GOPATH/src/github.com/lightningnetwork/lnd
-
-RUN git config --global user.name "abc" && git config --global user.email "abc@example.com" && git pull https://github.com/Roasbeef/lnd.git async-link-stop
 
 RUN dep ensure \
   && go install . ./cmd/...
