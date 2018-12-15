@@ -1,24 +1,37 @@
-FROM golang:1.10
+FROM golang:alpine as builder
 
 # Force Go to use the cgo based DNS resolver. This is required to ensure DNS
 # queries required to connect to linked containers succeed.
 ENV GODEBUG netdns=cgo
 
-# Install dep to manage vendor.
-RUN go get -u github.com/golang/dep/cmd/dep
+# Install dependencies and build the binaries.
+RUN apk add --no-cache --update alpine-sdk \
+    git \
+    make \
+    gcc \
+&&  git clone https://github.com/lightningnetwork/lnd /go/src/github.com/lightningnetwork/lnd \
+&&  cd /go/src/github.com/lightningnetwork/lnd \
+&&  make \
+&&  make install
 
-# Grab and install the latest version of lnd and all related dependencies.
-RUN git clone --depth=1 https://github.com/lightningnetwork/lnd $GOPATH/src/github.com/lightningnetwork/lnd
+# Start a new, final image.
+FROM alpine as final
 
-# Make lnd folder default.
-WORKDIR $GOPATH/src/github.com/lightningnetwork/lnd
+# Define a root volume for data persistence.
+VOLUME /root/.lnd
 
-RUN dep ensure \
-  && go install . ./cmd/...
+# Add bash and ca-certs, for quality of life and SSL-related reasons.
+RUN apk --no-cache add \
+    bash \
+    ca-certificates
 
-EXPOSE 9735 8080
+# Copy the binaries from the builder image.
+COPY --from=builder /go/bin/lncli /bin/
+COPY --from=builder /go/bin/lnd /bin/
 
-WORKDIR /lnd
-COPY lnd.conf /lnd/lnd.conf
-COPY bashrc /root/.bashrc
-ENTRYPOINT ["/go/bin/lnd"]
+# Expose lnd ports (p2p, rpc).
+EXPOSE 9735 10009
+
+# Specify the start command and entrypoint as the lnd daemon.
+ENTRYPOINT ["lnd"]
+CMD ["lnd"]
