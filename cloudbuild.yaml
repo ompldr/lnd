@@ -14,40 +14,40 @@ steps:
             '.'
         ]
 # Start deployment in us-east4
-- name: 'gcr.io/cloud-builders/kubectl'
-  args:
-  - patch
-  - statefulset
-  - lnd
-  - --type=json
-  - '-p=[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"us.gcr.io/ompldr/lnd:$REVISION_ID"}]'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-east4-a'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=ompldr-us-east4'
-
-# Wait for previous deployments to complete
-- name: 'gcr.io/cloud-builders/kubectl'
-  args:
-  - rollout
-  - status
-  - sts/lnd
-
-# Clear old kubectl creds
-- name: 'gcr.io/cloud-builders/kubectl'
-  entrypoint: 'bash'
-  args: ['-c',
-    'rm -rf ~/.kube'
-  ]
-
-# Start deployment in us-west1
-- name: 'gcr.io/cloud-builders/kubectl'
-  args:
-  - patch
-  - statefulset
-  - lnd
-  - --type=json
-  - '-p=[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"us.gcr.io/ompldr/lnd:$REVISION_ID"}]'
-  env:
-  - 'CLOUDSDK_COMPUTE_ZONE=us-west1-a'
-  - 'CLOUDSDK_CONTAINER_CLUSTER=ompldr-us-west1'
+# - name: 'gcr.io/cloud-builders/kubectl'
+#   args:
+#   - patch
+#   - statefulset
+#   - lnd
+#   - --type=json
+#   - '-p=[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"us.gcr.io/ompldr/lnd:$REVISION_ID"}]'
+#   env:
+#   - 'CLOUDSDK_COMPUTE_ZONE=us-east4-a'
+#   - 'CLOUDSDK_CONTAINER_CLUSTER=ompldr-us-east4'
+#
+# # Wait for previous deployments to complete
+# - name: 'gcr.io/cloud-builders/kubectl'
+#   args:
+#   - rollout
+#   - status
+#   - sts/lnd
+#
+# # Clear old kubectl creds
+# - name: 'gcr.io/cloud-builders/kubectl'
+#   entrypoint: 'bash'
+#   args: ['-c',
+#     'rm -rf ~/.kube'
+#   ]
+#
+# # Start deployment in us-west1
+# - name: 'gcr.io/cloud-builders/kubectl'
+#   args:
+#   - patch
+#   - statefulset
+#   - lnd
+#   - --type=json
+#   - '-p=[{"op": "replace", "path": "/spec/template/spec/containers/0/image", "value":"us.gcr.io/ompldr/lnd:$REVISION_ID"}]'
+#   env:
+#   - 'CLOUDSDK_COMPUTE_ZONE=us-west1-a'
+#   - 'CLOUDSDK_CONTAINER_CLUSTER=ompldr-us-west1'
 images: ['gcr.io/$PROJECT_ID/ompldr:latest','gcr.io/$PROJECT_ID/ompldr:$REVISION_ID']
